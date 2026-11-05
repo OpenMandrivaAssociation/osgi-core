@@ -18,7 +18,13 @@ BuildOption(install):	--file-name %{name} --alias org.osgi:org.osgi.core
 OSGi Core Release 6 interfaces and classes for compiling bundles.
 
 %prep
-%setup -q -c
+%setup -q -c -T
+# The builders' rpmuncompress passes a sources jar to tar.
+python - %{SOURCE0} <<'PY'
+import sys
+import zipfile
+zipfile.ZipFile(sys.argv[1]).extractall(".")
+PY
 mkdir -p src/main/java
 mv org src/main/java/
 python - %{version} <<'PY'
